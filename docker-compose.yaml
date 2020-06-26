@@ -1,0 +1,35 @@
+version: "2.3"
+services:
+    go:
+        container_name: testefisherygo 
+        image: wirakw/efisherygo:latest
+        ports:
+            - 8080:8080
+        depends_on:
+            - postgres
+        restart: unless-stopped
+        environment:
+            DBHOST: composepostgres
+            DBUSER: postgres
+            DBPASS: admin123
+            DBNAME: dbtestefishery
+            DBPORT: "5432"
+    node:
+        container_name: testefisherynode
+        image: wirakw/efisherynode:latest
+        ports:
+            - 5000:5000
+        depends_on: 
+            - postgres
+        environment:
+            DATABASE_URL: postgres://postgres:admin123@composepostgres/dbtestefishery?ssl=disable
+            SECRET: eFisheryTest
+            NODE_ENV: development
+    postgres:
+        container_name: composepostgres
+        image: postgres:10.0-alpine
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_DB: dbtestefishery
+            POSTGRES_PASSWORD: admin123
+    
